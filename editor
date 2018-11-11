@@ -1,0 +1,277 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.EventQueue;
+import java.awt.event.*;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.io.*;
+import java.util.*;
+import javax.swing.JOptionPane;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+class Utilities
+{
+ public String getDate()
+    {
+        DateFormat dateList = new SimpleDateFormat("hh:mm MM/dd/yyyy");
+        Date date = new Date();
+        return dateList.format(date);
+    }
+}
+class Window extends JFrame
+{
+public int j=0;
+private Container c;
+public JTextArea field;
+private Utilities util;
+public Window()
+{
+CreateMenu();
+c=getContentPane();
+field=new JTextArea();
+JScrollPane pane = new JScrollPane(field,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+c.setLayout(new BorderLayout());
+c.add(pane,BorderLayout.CENTER);
+setSize(800,600);
+setVisible(true);
+setTitle("Untitled-Notepad");
+}
+public void CreateMenu()
+{
+JMenuBar menu=new JMenuBar();
+JMenu File=new JMenu("File");
+JMenu Edit=new JMenu("Edit");
+JMenu Format=new JMenu("Format");
+JMenu View=new JMenu("View");
+JMenu Help=new JMenu("Help");
+JMenuItem New=new JMenuItem("New");
+JMenuItem Open=new JMenuItem("Open");
+JMenuItem Save=new JMenuItem("Save");
+JMenuItem SaveAs=new JMenuItem("Save As");
+JMenuItem PageSetup=new JMenuItem("Page Setup");
+JMenuItem Print=new JMenuItem("Print");
+JMenuItem Exit=new JMenuItem("Exit");
+JMenuItem Undo=new JMenuItem("Undo");
+JMenuItem Cut=new JMenuItem("Cut");
+JMenuItem Copy=new JMenuItem("Copy");
+JMenuItem Paste=new JMenuItem("Paste");
+JMenuItem Delete=new JMenuItem("Delete");
+JMenuItem Find=new JMenuItem("Find");
+JMenuItem FindNext=new JMenuItem("Find Next");
+JMenuItem Replace=new JMenuItem("Replace");
+JMenuItem GoTo=new JMenuItem("Goto");
+JMenuItem SelectAll=new JMenuItem("Select All");
+JMenuItem TimeDate=new JMenuItem("Time/Date");
+JMenuItem WordWrap=new JMenuItem("Word Wrap");
+JMenuItem Font=new JMenuItem("Font");
+JMenuItem StatusBar=new JMenuItem("Statur Bar");
+JMenuItem ViewHelp=new JMenuItem("View help");
+JMenuItem About=new JMenuItem("about Notepad");
+JMenuItem NightMode=new JMenuItem("Night Mode");
+NightMode.addActionListener((ActionEvent event)->{
+String choice=event.getActionCommand();
+if(choice.equals("Night Mode"))
+{
+field.setBackground(Color.BLACK);
+field.setForeground(Color.WHITE);
+}
+});
+Exit.addActionListener((ActionEvent event) -> {
+            System.exit(0);
+});
+About.addActionListener((ActionEvent event)->{
+String choice = event.getActionCommand(); 
+if(choice.equals("about Notepad")) 
+{ 
+JOptionPane.showMessageDialog(this,"this is yash mundra"); 
+} 
+});
+Save.addActionListener((ActionEvent event)->{
+String choice=event.getActionCommand();
+j=0;
+if (choice.equals("Save"))
+{
+JFileChooser save = new JFileChooser();
+int option = save.showSaveDialog(this);
+File file = new File(save.getSelectedFile().getPath());
+try
+{
+String source = field.getText();
+char buffer[] = new char[source.length()];
+source.getChars(0,source.length(),buffer,0);
+FileWriter f1= new FileWriter(file+".txt");
+for(int i=0;i<buffer.length;i++)
+{
+f1.write(buffer[i]);
+}
+f1.close();
+j=1;
+}
+catch(Exception ae)
+{}
+new Window();
+}
+});
+Open.addActionListener((ActionEvent event)->{
+String choice=event.getActionCommand();
+if(choice.equals("Open"))
+{
+try
+{
+JFileChooser open = new JFileChooser();
+int option = open.showOpenDialog(this);
+File f1 = new File(open.getSelectedFile().getPath());
+FileReader fr = new FileReader(f1);
+BufferedReader br = new BufferedReader(fr);
+String s;
+while((s=br.readLine())!=null)
+{
+field.append(s + "\n");
+}
+fr.close();
+}
+catch(Exception ae)
+{
+System.out.println(ae);
+}
+}
+setTitle(field.getText());
+});
+Cut.addActionListener((ActionEvent event)->{
+String choice=event.getActionCommand();
+if(choice.equals("Cut"))
+{
+field.cut();
+}
+});
+Copy.addActionListener((ActionEvent event)->{
+String choice=event.getActionCommand();
+if(choice.equals("Copy"))
+{
+field.copy();
+}
+});
+Paste.addActionListener((ActionEvent event)->{
+String choice=event.getActionCommand();
+if(choice.equals("Paste"))
+{
+field.paste();
+}
+});
+SelectAll.addActionListener((ActionEvent event)->{
+String choice=event.getActionCommand();
+if(choice.equals("Select All"))
+{
+field.selectAll();
+}
+});
+WordWrap.addActionListener((ActionEvent event)->{
+String choice=event.getActionCommand();
+if(choice.equals("Word Wrap"))
+{
+field.setLineWrap(true);
+}
+});
+TimeDate.addActionListener((ActionEvent event)->{
+String choice=event.getActionCommand();
+if(choice.equals("Time/Date"))
+{
+field.append(util.getDate());
+}
+});
+Replace.addActionListener((ActionEvent event)->{
+String choice=event.getActionCommand();
+if(choice.equals("Replace"))
+{
+TextEditFrame t=new TextEditFrame();
+}
+});
+GoTo.addActionListener((ActionEvent event)->{
+String choice=event.getActionCommand();
+if(choice.equals("GoTo"))
+{
+int lineNumber=0;  
+try  
+{  
+lineNumber=field.getLineOfOffset(field.getCaretPosition())+1;  
+String tempStr=JOptionPane.showInputDialog(c,"Enter Line Number:",""+lineNumber);  
+if(tempStr==null)  
+    {return;}  
+lineNumber=Integer.parseInt(tempStr);  
+field.setCaretPosition(field.getLineStartOffset(lineNumber-1));  
+}catch(Exception e){}  
+}
+});
+File.add(New);
+File.add(Open);
+File.add(Save);
+File.add(SaveAs);
+File.add(PageSetup);
+File.add(Print);
+File.add(Exit);
+Edit.add(Undo);
+Edit.add(Cut);
+Edit.add(Copy);
+Edit.add(Paste);
+Edit.add(Delete);
+Edit.add(Find);
+Edit.add(FindNext);
+Edit.add(Replace);
+Edit.add(GoTo);
+Edit.add(SelectAll);
+Edit.add(TimeDate);
+Format.add(WordWrap);
+Format.add(Font);
+Format.add(NightMode);
+View.add(StatusBar);
+Help.add(ViewHelp);
+Help.add(About);
+menu.add(File);
+menu.add(Edit);
+menu.add(Format);
+menu.add(View);
+menu.add(Help);
+setJMenuBar(menu);
+}
+class TextEditFrame extends JFrame
+ {
+private JTextField fromField = new JTextField(8);
+private JTextField toField = new JTextField(8);
+public TextEditFrame()
+ {
+ setTitle("TextEditTest");
+ setSize(500, 300);
+setVisible(true);
+setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+ Container contentPane = getContentPane();
+JPanel panel = new JPanel();
+JButton replaceButton = new JButton("Replace");
+panel.add(replaceButton);
+    replaceButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
+        String from = fromField.getText();
+        int start = field.getText().indexOf(from);
+        if (start >= 0 && from.length() > 0)
+          field.replaceRange(toField.getText(), start, start
+              + from.length());
+      }
+    });
+
+    panel.add(fromField);
+
+    panel.add(new JLabel("with"));
+
+    panel.add(toField);
+
+    contentPane.add(panel, "South");
+  }
+}
+}
+public class editor
+{
+public static void main(String gg[])
+{
+Window w=new Window();
+}
+}
